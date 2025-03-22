@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhuan Poteriko</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <!-- Menu lateral -->
+    <div class="sidebar">
+        <div class="profile-photo">
+            <img src="sua_foto.jpg" alt="Sua Foto">
+        </div>
+        <h2>Rhuan Poteriko</h2>
+        <p>Sobre Mim</p>
+        <div class="formation">
+            <h3>Formação</h3>
+            <ul>
+                <li>Cursando Analise e Desenvolvimento de Sistemas (PUC)</li>
+                <li>Cursando Python avançado</li>
+            </ul>
+        </div>
+        <div class="specialties">
+            <h3>Especialidades</h3>
+            <ul>
+                <li>Frontend (HTML, CSS, JS)</li>
+                <li>Backend (Node.js, Python)</li>
+                <li>Desenvolvimento de APIs</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="main-content">
+        
+        <!-- Banner 3D com linguagens de programação -->
+        <div class="banner" style="position: center; height: 300px;">
+            <div id="three-container" style="position: center; width: 100%; height: 100%;"></div>
+            <div class="name" style="position: center; text-align: center; font-size: 2em; font-weight: bold; color: white; z-index: 1;">Rhuan Poteriko</div>
+        </div>
+
+        <!-- Seção de projetos -->
+        <div class="portfolio">
+            <h2>Meus Projetos</h2>
+            <ul>
+                <li><a href="https://loja.lufer.com.br/">Loja Online (Shopify)</a></li>
+                <li><a href="https://www.exemplo2.com">Projetos GitHub</a></li>
+                <li><a href="https://www.exemplo3.com">Projeto 3</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Efeito de estrelas no fundo -->
+    <div class="stars"></div>
+
+    <script>
+        // Configuração do Three.js
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, 300);
+        document.getElementById("three-container").appendChild(renderer.domElement);
+
+        // Grupo de textos
+        const textGroup = new THREE.Group();
+        scene.add(textGroup);
+
+        // Carregar fonte para os textos 3D
+        const loader = new THREE.FontLoader();
+        loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+            const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
+            const languages = ["HTML", "CSS", "JavaScript", "Node.js", "Python", "React"];
+            const radius = 2; // Raio da órbita
+            
+            languages.forEach((lang, i) => {
+                const textGeometry = new THREE.TextGeometry(lang, {
+                    font: font,
+                    size: 0.25, // Tamanho menor
+                    height: 0.05,
+                });
+                
+                const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                const angle = (i / languages.length) * Math.PI * 2;
+                textMesh.position.set(Math.cos(angle) * radius, Math.sin(angle) * radius * 0.75, 0);
+                textMesh.userData = { angle: angle, speed: 0.005 }; // Movimento mais lento
+                textGroup.add(textMesh);
+            });
+        });
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            textGroup.children.forEach(textMesh => {
+                textMesh.userData.angle += textMesh.userData.speed;
+                textMesh.position.x = Math.cos(textMesh.userData.angle) * 2;
+                textMesh.position.y = Math.sin(textMesh.userData.angle) * 1.5;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, 300);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+
+</body>
+</html>
